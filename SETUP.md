@@ -23,6 +23,21 @@ Local v0 runs with placeholder keys. Real integrations should replace these befo
 - `CHARACTER_GRID_DELAY_MS`
 - `WELCOME_VIDEO_DELAY_MS`
 
+### Character Sheet Pipeline
+
+- `CHARACTER_SHEET_ADAPTER` — defaults to `stub-image-model`; swap this when a hosted image provider is wired in.
+- `CHARACTER_SHEET_REFERENCE_COUNT` — 12-24 generated references per immutable version.
+- `CHARACTER_SHEET_USE_HOSTED_IMAGE_MODEL` — feature-flag-shaped switch for hosted generation; local v0 keeps this `false`.
+- `CHARACTER_SHEET_CANCELLATION_RETENTION_DAYS` — defaults to the PRD recommendation of 30-day soft retention.
+- `CHARACTER_SHEET_SOURCE_SELFIE_RETENTION_DAYS` — defaults to 7 days for abandoned onboarding selfies.
+- `OBJECT_STORAGE_BUCKET`
+- `OBJECT_STORAGE_PUBLIC_BASE_URL`
+- `OBJECT_STORAGE_SIGNED_URL_TTL_SECONDS`
+- `OBJECT_STORAGE_SIGNING_SECRET`
+- `OBJECT_STORAGE_LOCAL_DIR`
+
+The `character_sheet_pipeline` feature flag can override adapter, reference count, signed URL TTL, hosted-model usage, and retention values without a code deploy.
+
 ### Payments
 
 - `STRIPE_SECRET_KEY`
@@ -59,4 +74,4 @@ Local v0 runs with placeholder keys. Real integrations should replace these befo
 
 ## Current Checkpoint
 
-Build item 1 is the onboarding flow. External APIs are stubbed, but the route transitions and server-side onboarding state are implemented locally.
+Build item 2 is the character sheet pipeline. External image-model and object-storage integrations are architecturally real but stubbed locally, with immutable versioned outputs and signed URL-shaped delivery.

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { createCharacterSheetVersionForUser, ensureInitialCharacterSheetForUser } from "@/lib/character-sheets/pipeline";
 import { setSessionUserId } from "@/lib/session";
 import {
   advanceUser,
@@ -131,44 +132,26 @@ export async function confirmLikenessAction() {
     redirect("/onboarding/generating");
   }
 
-  await prisma.characterSheet.upsert({
-    where: {
-      userId_version: {
-        userId: user.id,
-        version: 1
-      }
-    },
-    update: {
-      status: "ready",
-      referenceImageUrls: sampleGridImages,
-      threeSixtyImageUrls: {
-        front: sampleGridImages[0],
-        threeQuarterLeft: sampleGridImages[1],
-        profileLeft: sampleGridImages[2],
-        back: sampleGridImages[3],
-        profileRight: sampleGridImages[4],
-        threeQuarterRight: sampleGridImages[5]
-      }
-    },
-    create: {
-      userId: user.id,
-      version: 1,
-      sourceSelfieUrl: asset.selfieDataUrl ?? "/selfie-placeholder.svg",
-      referenceImageUrls: sampleGridImages,
-      threeSixtyImageUrls: {
-        front: sampleGridImages[0],
-        threeQuarterLeft: sampleGridImages[1],
-        profileLeft: sampleGridImages[2],
-        back: sampleGridImages[3],
-        profileRight: sampleGridImages[4],
-        threeQuarterRight: sampleGridImages[5]
-      },
-      status: "ready"
-    }
-  });
+  await ensureInitialCharacterSheetForUser(user.id, asset.selfieDataUrl ?? "/selfie-placeholder.svg");
 
   await advanceUser(user.id, "welcome_generating");
   redirect("/onboarding/welcome-generating");
+}
+
+export async function regenerateCharacterSheetAction() {
+  const user = await requireCurrentUser();
+  const asset = await ensureOnboardingAsset(user.id);
+
+  if (!asset.selfieDataUrl) {
+    redirect("/onboarding/selfie?error=Upload a confirmed selfie before regenerating your character sheet.");
+  }
+
+  await createCharacterSheetVersionForUser({
+    userId: user.id,
+    sourceSelfieDataUrl: asset.selfieDataUrl
+  });
+
+  redirect("/character-sheets");
 }
 
 export async function rejectLikenessAction() {

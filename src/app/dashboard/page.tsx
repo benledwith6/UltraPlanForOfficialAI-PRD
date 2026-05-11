@@ -13,6 +13,9 @@ export default async function DashboardPage() {
           The full dashboard arrives across later build checkpoints. Onboarding now lands here for paid users.
         </p>
         <div className="actions">
+          <Link className="button" href="/character-sheets">
+            View character sheets
+          </Link>
           <Link className="button" href="/templates">
             Browse templates
           </Link>

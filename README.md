@@ -22,7 +22,7 @@ Workspace for collaboratively drafting a product PRD using `/ultraplan`, then ha
 ## Implementation Checkpoints
 
 - [x] Build item 1: onboarding flow scaffolded and verified
-- [ ] Build item 2: character sheet pipeline
+- [x] Build item 2: character sheet pipeline
 - [ ] Build item 3: lawyer legal concept explainer template
 - [ ] Build item 4: paywall + Stripe
 - [ ] Build item 5: calendar with guided cadence

@@ -37,6 +37,17 @@ test("lawyer signup reaches paywall through all onboarding screens", async ({ pa
 
   await expect(page).toHaveURL(/\/paywall/);
   await expect(page.getByRole("heading", { name: "Pick your posting engine." })).toBeVisible();
+
+  await page.getByRole("button", { name: "I'll decide later" }).click();
+  await page.getByRole("link", { name: "View character sheet" }).click();
+  await expect(page).toHaveURL(/\/character-sheets/);
+  await expect(page.getByRole("heading", { name: "Your immutable likeness versions." })).toBeVisible();
+  await expect(page.getByText("Version 1")).toBeVisible();
+  await expect(page.getByText(/reference images plus 6 organized 360-degree views/)).toBeVisible();
+
+  await page.getByRole("button", { name: "Regenerate as v2" }).click();
+  await expect(page.getByText("Version 2")).toBeVisible();
+  await expect(page.getByText("Version 1")).toBeVisible();
 });
 
 test("unsupported profession routes to waitlist", async ({ page }) => {

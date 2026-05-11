@@ -402,6 +402,20 @@ h3 {
   object-fit: cover;
 }
 
+.portrait-grid.four-up {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.portrait-grid.six-up {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.asset-label {
+  min-height: 42px;
+  margin: 0;
+  padding: 10px 12px 12px;
+}
+
 .tier-card {
   display: grid;
   gap: 14px;
@@ -438,6 +452,8 @@ h3 {
   .hero,
   .two-col,
   .three-col,
+  .portrait-grid.four-up,
+  .portrait-grid.six-up,
   .choice-grid,
   .photo-rules {
     grid-template-columns: 1fr;

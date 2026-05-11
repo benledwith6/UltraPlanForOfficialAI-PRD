@@ -25,9 +25,14 @@ export default async function FreeDashboardPage() {
             <div className="tier-card">
               <h3>Locked next step</h3>
               <p className="hint">Generate a lawyer explainer, listing walkthrough, brainstorm cards, or guided calendar once you choose a paid tier.</p>
-              <Link className="button" href="/paywall">
-                Unlock production
-              </Link>
+              <div className="actions">
+                <Link className="button" href="/paywall">
+                  Unlock production
+                </Link>
+                <Link className="button secondary" href="/character-sheets">
+                  View character sheet
+                </Link>
+              </div>
             </div>
           </div>
         </div>

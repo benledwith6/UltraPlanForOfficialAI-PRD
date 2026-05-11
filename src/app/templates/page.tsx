@@ -5,7 +5,7 @@ export default function TemplatesPage() {
     <PlaceholderPage
       eyebrow="Template gallery"
       title="Templates unlock after the onboarding checkpoint."
-      description="The next build slice will add the character sheet pipeline, then the lawyer legal concept explainer template flow."
+      description="The character sheet pipeline is available now. The next reviewed build slice will add the lawyer legal concept explainer template flow."
     />
   );
 }
