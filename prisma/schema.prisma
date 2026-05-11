@@ -1,0 +1,243 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Profession {
+  lawyer
+  realtor
+}
+
+enum Tone {
+  professional
+  approachable
+  direct
+}
+
+enum Tier {
+  free
+  starter
+  pro
+  studio
+}
+
+enum CharacterSheetStatus {
+  generating
+  ready
+  failed
+}
+
+enum TemplateProfession {
+  lawyer
+  realtor
+  universal
+}
+
+enum VideoJobStatus {
+  queued
+  rendering
+  ready
+  failed
+}
+
+enum CalendarEntryStatus {
+  draft
+  scheduled
+  published
+  failed
+}
+
+enum SocialChannel {
+  linkedin
+  instagram
+  tiktok
+  youtube
+  facebook
+}
+
+enum SubscriptionStatus {
+  incomplete
+  trialing
+  active
+  past_due
+  canceled
+}
+
+enum OnboardingStep {
+  signup
+  selfie
+  character_generating
+  likeness_check
+  welcome_generating
+  welcome_reveal
+  paywall
+  dashboard
+  waitlist
+}
+
+model User {
+  id              String           @id @default(cuid())
+  email           String           @unique
+  passwordHash    String?
+  oauthProvider   String?
+  oauthSubject    String?
+  profession      Profession?
+  professionMeta  Json?
+  tone            Tone             @default(professional)
+  tier            Tier             @default(free)
+  isStaff         Boolean          @default(false)
+  onboardingStep  OnboardingStep   @default(signup)
+  createdAt       DateTime         @default(now())
+  lastLoginAt     DateTime?
+  onboardingAsset OnboardingAsset?
+  characterSheets CharacterSheet[]
+  videoJobs       VideoJob[]
+  calendarEntries CalendarEntry[]
+  subscriptions   Subscription[]
+  modelRatings    ModelEvaluation[]
+}
+
+model WaitlistEntry {
+  id          String   @id @default(cuid())
+  email       String
+  profession  String
+  note        String?
+  createdAt   DateTime @default(now())
+}
+
+model OnboardingAsset {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  selfieName         String?
+  selfieDataUrl      String?
+  selfieValidatedAt  DateTime?
+  likenessAttempts   Int      @default(0)
+  gridImageUrls      Json?
+  welcomeVideoUrl    String?
+  welcomeVideoReady  Boolean  @default(false)
+  supportEscalated   Boolean  @default(false)
+  retainedUntil      DateTime?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CharacterSheet {
+  id                  String               @id @default(cuid())
+  userId              String
+  version             Int
+  sourceSelfieUrl     String
+  referenceImageUrls  Json
+  threeSixtyImageUrls Json
+  status              CharacterSheetStatus @default(generating)
+  createdAt           DateTime             @default(now())
+  user                User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  videoJobs           VideoJob[]
+
+  @@unique([userId, version])
+}
+
+model Template {
+  id                   String             @id
+  name                 String
+  description          String
+  thumbnailUrl         String?
+  profession           TemplateProfession
+  inputsSchema         Json
+  scriptPromptTemplate String
+  videoPromptTemplate  String
+  defaultDurationSec   Int
+  aspectRatio          String
+  complianceRules      Json
+  cta                  String
+  isPublished          Boolean            @default(false)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  videoJobs            VideoJob[]
+  modelEvaluations     ModelEvaluation[]
+}
+
+model VideoJob {
+  id                String              @id @default(cuid())
+  userId            String
+  templateId        String
+  characterSheetId  String?
+  userInputs        Json
+  generatedScript   String?
+  videoModelId      String?
+  videoUrl          String?
+  status            VideoJobStatus      @default(queued)
+  errorMessage      String?
+  costCents         Int?
+  renderTimeSeconds Int?
+  createdAt         DateTime            @default(now())
+  completedAt       DateTime?
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template          Template            @relation(fields: [templateId], references: [id])
+  characterSheet    CharacterSheet?     @relation(fields: [characterSheetId], references: [id])
+  calendarEntry     CalendarEntry?
+  modelEvaluations  ModelEvaluation[]
+}
+
+model CalendarEntry {
+  id           String              @id @default(cuid())
+  userId       String
+  videoJobId   String?             @unique
+  scheduledAt  DateTime
+  status       CalendarEntryStatus @default(draft)
+  channels     Json
+  caption      String
+  hashtags     Json
+  createdAt    DateTime            @default(now())
+  publishedAt  DateTime?
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  videoJob     VideoJob?           @relation(fields: [videoJobId], references: [id])
+  posts        Post[]
+}
+
+model Post {
+  id                 String        @id @default(cuid())
+  calendarEntryId    String
+  channel            SocialChannel
+  externalPostId     String?
+  externalUrl        String?
+  publishedAt        DateTime?
+  engagementSnapshot Json?
+  calendarEntry      CalendarEntry @relation(fields: [calendarEntryId], references: [id], onDelete: Cascade)
+}
+
+model ModelEvaluation {
+  id              String   @id @default(cuid())
+  templateId      String
+  videoModelId    String
+  evaluatorUserId String
+  videoJobId      String
+  rating          Int
+  notes           String?
+  createdAt       DateTime @default(now())
+  template        Template @relation(fields: [templateId], references: [id])
+  evaluator       User     @relation(fields: [evaluatorUserId], references: [id])
+  videoJob        VideoJob @relation(fields: [videoJobId], references: [id])
+}
+
+model Subscription {
+  id                     String             @id @default(cuid())
+  userId                 String
+  tier                   Tier
+  provider               String             @default("stripe")
+  providerSubscriptionId String?
+  status                 SubscriptionStatus
+  currentPeriodEnd       DateTime?
+  user                   User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model FeatureFlag {
+  key         String   @id
+  value       Json
+  description String?
+  updatedAt   DateTime @updatedAt
+}

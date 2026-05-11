@@ -18,3 +18,16 @@ Workspace for collaboratively drafting a product PRD using `/ultraplan`, then ha
 - [ ] PRD drafted via ultraplan
 - [ ] PRD finalized
 - [ ] Handed off to executor
+
+## Implementation Checkpoints
+
+- [x] Build item 1: onboarding flow scaffolded and verified
+- [ ] Build item 2: character sheet pipeline
+- [ ] Build item 3: lawyer legal concept explainer template
+- [ ] Build item 4: paywall + Stripe
+- [ ] Build item 5: calendar with guided cadence
+- [ ] Build item 6: posting via deep-link reminder path
+- [ ] Build item 7: brainstorm surface
+- [ ] Build item 8: admin dashboard
+- [ ] Build item 9: remaining launch templates
+- [ ] Build item 10: polish
