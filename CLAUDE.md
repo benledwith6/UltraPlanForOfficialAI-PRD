@@ -18,7 +18,8 @@ The product itself is an AI marketing-content app for **lawyers and real estate 
 ## Account & infra context
 
 - **GitHub**: `benledwith6/UltraPlanForOfficialAI-PRD` on `main`. Owner is the GitHub account `benledwith6` (the user has a second account `bentailoredai` — not the active one for this project).
-- **Anthropic / Claude Code**: signed in as `benledwith6@g.ucla.edu` on a **Max plan** (this is what unlocks ultraplan, which is research preview and requires Claude Code v2.1.91+).
+- **Anthropic / Claude Code**: signed in as **`gtm@muditastudios.com`** on a **Max plan** (this is what unlocks ultraplan, which requires Claude Code v2.1.91+). NOTE: this is a different email from the GitHub account — that's expected. The `benledwith6@g.ucla.edu` account is the user's old **Pro** account and is NOT what we use here.
+- **Browser for ultraplan review**: when opening claude.ai/code/session URLs to review ultraplan output, you MUST be signed into `gtm@muditastudios.com` (the Max account), not the Pro account.
 - **Working directory**: this repo at `~/UltraPlanForOfficialAI-PRD/`. **Do NOT use** the older path `/Users/benledwith/Ultraplan testing/` — it's a duplicate from initial setup and should be deleted after the ultraplan flow finishes (see Cleanup tasks below).
 
 ## Cleanup tasks
